@@ -1,0 +1,52 @@
+---
+- name: 更新软件包缓存
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: 安装依赖包
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+    state: present
+
+- name: 添加 Kubernetes APT 密钥
+  ansible.builtin.apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    keyring: /etc/apt/keyrings/kubernetes-archive-keyring.gpg
+    state: present
+
+- name: 添加 Kubernetes 软件源
+  ansible.builtin.lineinfile:
+    path: /etc/apt/sources.list.d/kubernetes.list
+    line: "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main"
+    state: present
+    create: yes
+
+- name: 再次更新软件包缓存
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: 安装 Kubernetes 组件
+  ansible.builtin.apt:
+    name:
+      - kubelet
+      - kubeadm
+      - kubectl
+    state: present
+
+- name: 锁定 kubelet 版本
+  ansible.builtin.dpkg_selections:
+    name: kubelet
+    selection: hold
+
+- name: 锁定 kubeadm 版本
+  ansible.builtin.dpkg_selections:
+    name: kubeadm
+    selection: hold
+
+- name: 锁定 kubectl 版本
+  ansible.builtin.dpkg_selections:
+    name: kubectl
+    selection: hold

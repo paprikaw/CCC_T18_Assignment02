@@ -1,0 +1,6 @@
+- name: Install Kubernetes Dashboard
+  ansible.builtin.k8s:
+    state: present
+    src: https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+    kubeconfig: "{{ kubeconfig_path }}"
+  delegate_to: localhost

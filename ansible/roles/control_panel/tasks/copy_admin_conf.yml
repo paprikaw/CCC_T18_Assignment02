@@ -1,0 +1,12 @@
+- name: Create local directory for admin.conf
+  delegate_to: localhost
+  file:
+    path: "{{ local_k8s_directory }}"
+    state: directory
+
+- name: Copy admin.conf from control panel node to local machine
+  fetch:
+    src: /etc/kubernetes/admin.conf
+    dest: "{{ local_k8s_directory }}/confg"
+    flat: yes
+    become: yes

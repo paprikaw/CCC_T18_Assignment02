@@ -1,0 +1,6 @@
+- name: Setup new Kubernetes worker nodes
+  hosts: new_k8s_workers
+  become: true
+  roles:
+    - common
+    - worker_node

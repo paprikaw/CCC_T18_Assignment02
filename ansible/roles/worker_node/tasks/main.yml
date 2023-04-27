@@ -1,0 +1,15 @@
+---
+- name: Create new token and get join command on control panel
+  ansible.builtin.command: kubeadm token create --print-join-command
+  register: join_command_raw
+  delegate_to: "{{ groups['k8s_control_panel'][0] }}"
+  run_once: true
+  changed_when: true
+
+- name: Print join command
+  ansible.builtin.debug:
+    msg: "join_command_raw"
+
+- name: Join the cluster
+  ansible.builtin.command: "{{ join_command_raw.stdout_lines[0] }}"
+  changed_when: true

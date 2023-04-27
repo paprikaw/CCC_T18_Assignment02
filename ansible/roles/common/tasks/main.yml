@@ -1,0 +1,12 @@
+---
+- name: Initialize iptable
+  include_tasks: config_iptable.yml
+
+- name: Install CRI-O Runtime
+  include_tasks: install_crio_runtime.yml
+
+- name: set up cni plugins
+  include_tasks: setup_cni_plugins.yml
+
+- name: Install Kubernetes Components
+  include_tasks: install_k8s.yml

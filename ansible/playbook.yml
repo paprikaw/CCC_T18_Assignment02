@@ -1,0 +1,33 @@
+---
+- name: Initialize all the cluster nodes
+  hosts: k8s_cluster
+  become: true
+  vars_files:
+    - variables/vars.yml
+  tasks:
+    - name: Initialize iptable
+      include_tasks: roles/tasks/config_iptable.yml
+
+    - name: Install CRI-O Runtime
+      include_tasks: roles/tasks/install_crio_runtime.yml
+
+    - name: set up cni plugins
+      include_tasks: roles/tasks/setup_cni_plugins.yml
+
+    - name: Install Kubernetes Components
+      include_tasks: roles/tasks/install_k8s.yml
+
+- name: Setup Kubernetes Cluster
+  hosts: k8s_control_panel
+  become: true
+  vars_files:
+    - variables/vars.yml
+  tasks:
+    - name: Initialize control pane
+      include_tasks: roles/tasks/init_control_pane.yml
+
+    - name: Get join command
+      include_tasks: roles/tasks/get_join.yml
+
+    - name: Copy admin.conf to local
+      include_tasks: roles/tasks/copy_admin_conf.yml

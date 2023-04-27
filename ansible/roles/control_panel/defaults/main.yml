@@ -1,0 +1,2 @@
+local_k8s_directory: "{{ lookup('env', 'HOME') }}/.kube"
+pod_network_cidr: 10.244.0.0/16
