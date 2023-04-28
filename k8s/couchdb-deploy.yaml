@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: couchdb-single-node
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: couchdb-single-node
+  template:
+    metadata:
+      labels:
+        app: couchdb-single-node
+    spec:
+      containers:
+      - name: couchdb
+        image: couchdb:3.3.1
+        ports:
+        - containerPort: 5984
+        env:
+        - name: COUCHDB_USER
+          value: admin
+        - name: COUCHDB_PASSWORD
+          value: hahaha

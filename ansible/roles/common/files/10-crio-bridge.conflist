@@ -19,6 +19,11 @@
             [{ "subnet": "1100:200::/24" }]
         ]
       }
-    }
+    },
+    {
+     "type": "portmap",
+     "capabilities": {"portMappings": true},
+     "externalSetMarkChain": "KUBE-MARK-MASQ"
+   }
   ]
 }

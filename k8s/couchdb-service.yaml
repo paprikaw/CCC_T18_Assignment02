@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: couchdb-single-node
+spec:
+  selector:
+    app: couchdb-single-node
+  ports:
+    - protocol: TCP
+      port: 5984
+      targetPort: 5984
+      nodePort: 30000
+  type: NodePort
