@@ -17,7 +17,7 @@ def process(json_stirng,db):
         else:
             data["_id"] = my_id
         doc_id,doc_rev = db.save(data)
-        print(f"ID:{doc_id}rev:{doc_rev}")
+        #print(f"ID:{doc_id}rev:{doc_rev}")
         return 1 
     else:
         return 0
@@ -45,6 +45,7 @@ def process_twitter_data(file_address: str, comm: object, size: int, rank: int,d
                     if "geo" in current_line:
                         if (process(current_line,db)):
                             count+=1
+                            print(count)
                         else:
                             pass
                     #now it is a string include a whole tweet.
@@ -63,6 +64,8 @@ def process_twitter_data(file_address: str, comm: object, size: int, rank: int,d
         if f:
             f.close()
 
+
+
 if __name__ == "__main__":
     record_count = 0
     comm = MPI.COMM_WORLD
@@ -72,7 +75,7 @@ if __name__ == "__main__":
     admin_username = 'admin'
     admin_password = '666'
     couch = couchdb.Server('http://{0}:{1}@172.26.135.41:5984/'.format(admin_username, admin_password))
-    db_name = "twitter_data"
+    db_name = "test_data"
 
     if db_name not in couch:  
         db = couch.create(db_name)
@@ -82,6 +85,7 @@ if __name__ == "__main__":
     if rank == 0:
         start = time.time()
     process_twitter_data(twitter_data_address,comm, size, rank,db,record_count)
+    
 
     if rank == 0:
         end = time.time()
