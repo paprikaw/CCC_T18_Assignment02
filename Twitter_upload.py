@@ -63,8 +63,6 @@ def process_twitter_data(file_address: str, comm: object, size: int, rank: int,d
         if f:
             f.close()
 
-
-
 if __name__ == "__main__":
     record_count = 0
     comm = MPI.COMM_WORLD
@@ -74,7 +72,7 @@ if __name__ == "__main__":
     admin_username = 'admin'
     admin_password = '666'
     couch = couchdb.Server('http://{0}:{1}@172.26.135.41:5984/'.format(admin_username, admin_password))
-    db_name = "test_data"
+    db_name = "twitter_data"
 
     if db_name not in couch:  
         db = couch.create(db_name)
