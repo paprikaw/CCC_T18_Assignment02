@@ -68,7 +68,7 @@ if __name__ == "__main__":
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
     size = comm.Get_size()
-    twitter_data_address = "E:\\CCC_A2\\mnt\\ext100\\twitter-huge.json"
+    twitter_data_address = "twitter-huge.json"
     admin_username = 'admin'
     admin_password = '666'
     couch = couchdb.Server('http://{0}:{1}@172.26.135.41:5984/'.format(admin_username, admin_password))
