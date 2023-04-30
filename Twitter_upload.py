@@ -6,21 +6,40 @@ import os
 
 import re
 import couchdb
-def process(json_stirng,db):
-    data = json.loads(json_stirng)
-    if data["doc"]['data']['geo']:
-        my_id = data["doc"]["_id"]
-        if db.get(my_id):
-            rev = db.get(my_id).rev
-            data["_id"] = my_id
-            data["_rev"] = rev
+
+# def process(json_stirng,db):
+#     data = json.loads(json_stirng)
+#     if data["doc"]['data']['geo']:
+#         my_id = data["doc"]["_id"]
+#         if db.get(my_id):
+#             return 0 
+#         else:
+#             data["_id"] = my_id
+#         doc_id,doc_rev = db.save(data)
+#         #print(f"ID:{doc_id}rev:{doc_rev}")
+#         return 1 
+#     else:
+#         return 0
+
+def process(json_string, db):
+    data = json.loads(json_string)
+    try:
+        # Check if the required keys exist in the data
+        if  data["doc"]["data"]["geo"]:
+            my_id = data["doc"]["_id"]
+            if db.get(my_id):
+                return 0
+            else:
+                data["_id"] = my_id
+            doc_id, doc_rev = db.save(data)
+            print(f"ID:{doc_id}rev:{doc_rev}")
+            return 1
         else:
-            data["_id"] = my_id
-        doc_id,doc_rev = db.save(data)
-        #print(f"ID:{doc_id}rev:{doc_rev}")
-        return 1 
-    else:
-        return 0
+            return 0
+    except KeyError:
+        pass
+
+
 
 def process_twitter_data(file_address: str, comm: object, size: int, rank: int,db,count):
     f = None
@@ -43,16 +62,13 @@ def process_twitter_data(file_address: str, comm: object, size: int, rank: int,d
                         current_line = current_line[:-2]
                         #print(current_line)
                     if "geo" in current_line:
-                        if (process(current_line,db)):
-                            count+=1
-                            print(count)
-                        else:
-                            pass
+                        process(current_line,db)
                     #now it is a string include a whole tweet.
                     current_line = ""
                 else:
                     current_line = ""
                     if f.tell() > end_location:
+                        print("done!")
                         break
                     pass             
         return 
@@ -75,7 +91,7 @@ if __name__ == "__main__":
     admin_username = 'admin'
     admin_password = '666'
     couch = couchdb.Server('http://{0}:{1}@172.26.135.41:5984/'.format(admin_username, admin_password))
-    db_name = "test_data"
+    db_name = "new_twitter"
 
     if db_name not in couch:  
         db = couch.create(db_name)
