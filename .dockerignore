@@ -1,0 +1,14 @@
+__pycache__
+node_modules
+frontend/.git
+backend/.git
+*.pyc
+*.pyo
+*.pyd
+.env
+doc
+k8s
+sudo_analysis
+Twitter_upload.py
+README.md
+ansible
