@@ -52,7 +52,9 @@ def tranport_in(json_string, tran_string):
 
 
 def process_twitter_data(file_address: str, comm: object, size: int, rank: int,db,count):
-    transport_string = ['bus','car', 'bike', 'tram', 'metro', 'publictransport', 'lightrail', 'traffic jam', 'public transport', 'uber', 'railway', 'train', 'transit']
+    transport_string = ['taxi','airplane','walk','bus','car', 'bike', 'tram', 'metro', 
+                        'publictransport', 'lightrail', 'traffic jam', 
+                        'public transport', 'uber', 'railway', 'train', 'transit','airport','signal','parking lot','travel','safety']
     f = None
     try:
         f = open(file_address, "r", encoding="utf-8")
