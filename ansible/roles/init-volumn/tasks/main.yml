@@ -1,0 +1,23 @@
+- name: Create filesystem on volume
+  ansible.builtin.command:
+    cmd: "mkfs.ext4 {{ volumn_path }}"
+  changed_when: true
+
+- name: Create mount point directory
+  ansible.builtin.file:
+    path: "{{ mount_path }}"
+    state: directory
+    mode: "0755"
+
+- name: Mount the volume
+  ansible.posix.mount:
+    path: "{{ mount_path }}"
+    src: /dev/vdb
+    fstype: ext4
+    state: mounted
+
+- name: Add volume to /etc/fstab
+  ansible.builtin.lineinfile:
+    path: /etc/fstab
+    line: "{{ volumn_path }} {{ mount_path }} ext4 defaults 0 0"
+    state: present

@@ -1,0 +1,15 @@
+---
+- name: Setup github registry secret
+  hosts: localhost
+  vars:
+    # In order to yes this playbook, be sure to set the following variables
+    # Remember to not push your GitHub token to the project repository
+    # For more detained information of this authentications, please visit:
+    # https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry
+    github_username: paprikaw
+    github_token: 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
+    secret_name: regcred
+    email: baixu.must@gmail.com
+    namespace: default
+  roles:
+    - private-registry

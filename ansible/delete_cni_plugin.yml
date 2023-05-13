@@ -1,9 +1,0 @@
-- name: Initialize all the cluster nodes
-  hosts: k8s_cluster
-  become: true
-  vars:
-    first_setup: false
-    cni_plugin_reconfigure: false
-    cni_plugin_delete: true
-  roles:
-    - common

@@ -1,0 +1,43 @@
+---
+- name: Install K3s on the master node
+  hosts: k3s_master
+  become: true
+  vars:
+    - home_path: "/Users/ericwhite/.kube/"
+  tasks:
+    - name: Download and install K3s on the master node
+      ansible.builtin.shell: "curl -sfL https://get.k3s.io | sh -"
+      args:
+        executable: /bin/bash
+
+    - name: Fetch the K3s node-token from the master node
+      ansible.builtin.slurp:
+        src: /var/lib/rancher/k3s/server/node-token
+      register: tmp
+
+    - name: Set fact
+      ansible.builtin.set_fact: k3s_nodetoken={{ tmp['content'] | b64decode | trim }}
+
+    - name: Print the K3s node-token
+      ansible.builtin.debug:
+        msg: "{{ k3s_nodetoken }}"
+
+    - name: Fetch kubeconfig from the K3s server
+      ansible.builtin.fetch:
+        src: /etc/rancher/k3s/k3s.yaml
+        dest: "{{ home_path }}/.kube/"
+        flat: true
+
+- name: Install K3s on the worker nodes
+  hosts: k3s_workers
+  become: true
+  vars:
+    token: "{{ hostvars['control_panel']['k3s_nodetoken'] }}"
+  roles:
+    - k3s-worker-node
+
+- name: Install addons
+  hosts: localhost
+  become: true
+  roles:
+    - add-ons

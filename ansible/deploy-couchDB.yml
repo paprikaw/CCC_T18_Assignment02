@@ -1,0 +1,6 @@
+---
+- name: Deploy couchdb chart
+  hosts: localhost
+  gather_facts: false
+  roles:
+    - role: couchDB
