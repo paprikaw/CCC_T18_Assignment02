@@ -1,8 +1,0 @@
-- name: Initialize volume on worker nodes
-  hosts: new_workers
-  become: true
-  vars:
-    volumn_path: /dev/vdb
-    mount_path: /mnt/attached-volumn
-  roles:
-    - init-volumn

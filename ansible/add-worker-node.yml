@@ -1,8 +1,11 @@
 ---
-- name: Install K3s on the worker nodes
+- name: Install K3s on the worker nodes and setup volumn
   hosts: new_workers
   vars:
     token: K109fca5c03917ada568a12b8e9cd08cbc33da18fad61a92fb7b8f6b3dee7536bb2::server:bf2d7b0f0997bfe355335f072106e7ba
+    volumn_path: /dev/vdb
+    mount_path: /mnt/attached-volumn
     become: true
   roles:
     - k3s-worker-node
+    - setup-volumn
