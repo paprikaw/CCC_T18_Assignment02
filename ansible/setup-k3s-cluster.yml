@@ -16,7 +16,8 @@
       register: tmp
 
     - name: Set fact
-      ansible.builtin.set_fact: k3s_nodetoken={{ tmp['content'] | b64decode | trim }}
+      ansible.builtin.set_fact:
+        k3s_nodetoken: "{{ tmp['content'] | b64decode | trim }}"
 
     - name: Print the K3s node-token
       ansible.builtin.debug:
