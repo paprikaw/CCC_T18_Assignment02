@@ -1,0 +1,4 @@
+- name: Install k3s panel 
+  ansible.builtin.shell: |
+    curl -sfL https://get.k3s.io | sh -
+  changed_when: true

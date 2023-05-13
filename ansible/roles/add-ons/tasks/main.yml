@@ -1,6 +1,33 @@
+# - name: Update repositories cache and install "foo" package
+#   ansible.builtin.apt:
+#     name: python3-pip
+#     update_cache: yes
+
+# - name: install pre-requisites
+#   ansible.builtin.pip:
+#     name:
+#       - openshift
+#       - pyyaml
+#       - kubernetes
+#       - jsonpatch
+
 - name: Install Kubernetes Dashboard
-  ansible.builtin.k8s:
+  kubernetes.core.k8s:
+    kubeconfig: /home/ubuntu/.kube/config
     state: present
     src: https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
-    kubeconfig: "{{ kubeconfig_path }}"
-  delegate_to: localhost
+- name: debug
+  debug:
+    msg: "{{ configure_file_path }}"
+
+- name: Create Service account
+  kubernetes.core.k8s:
+    kubeconfig: /home/ubuntu/.kube/config
+    state: present
+    definition: "{{ lookup('file', '/Users/ericwhite/Projects/Courses/Cluster_clound/CCC_T18_Assignment02/ansible/actions/ServerAccount.yml' ) | from_yaml }}"
+
+- name: Create role binding
+  kubernetes.core.k8s:
+    kubeconfig: /home/ubuntu/.kube/config
+    state: present
+    definition: "{{ lookup('file', '/Users/ericwhite/Projects/Courses/Cluster_clound/CCC_T18_Assignment02/ansible/actions/ClusterRoleBinding.yml') | from_yaml }}"

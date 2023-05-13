@@ -1,12 +1,13 @@
 - name: Create local directory for admin.conf
   delegate_to: localhost
-  file:
+  ansible.builtin.file:
     path: "{{ local_k8s_directory }}"
     state: directory
+    mode: "0755"
 
 - name: Copy admin.conf from control panel node to local machine
-  fetch:
+  ansible.builtin.fetch:
     src: /etc/kubernetes/admin.conf
     dest: "{{ local_k8s_directory }}/confg"
-    flat: yes
-    become: yes
+    flat: true
+    become: true

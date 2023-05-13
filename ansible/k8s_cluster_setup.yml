@@ -1,17 +1,29 @@
 - name: Initialize all the cluster nodes
-  hosts: k8s_cluster
+  hosts: k8s_workers
   become: true
   roles:
     - common
 
-- name: Setup Kubernetes Cluster
-  hosts: k8s_control_panel
-  become: true
-  roles:
-    - control_panel
+# - name: Setup Kubernetes Cluster
+#   hosts: k8s_control_panel
+#   become: true
+#   roles:
+#     - control_panel
+
+# - name: Start to install CNI for cluster
+#   hosts: k8s_control_panel
+#   become: true
+#   roles:
+#     - cni-plugin
 
 - name: Setup Kubernetes worker node
   hosts: k8s_workers
   become: true
   roles:
     - worker_node
+
+# - name: Add add-ons
+#   hosts: k8s_cluster
+#   become: true
+#   roles:
+#     - add-ons

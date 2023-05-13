@@ -1,0 +1,18 @@
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    name: deployment-test-nodeport
+  name: deployment-test-nodeport
+spec:
+  # this will make the service a NodePort service
+  type: NodePort
+  selector:
+    name: deployment-test
+  ports:
+    - protocol: TCP
+      # new -> this will be the port used to reach it from outside
+      # if not specified, a random port will be used from a specific range (default: 30000-32767)
+      # nodePort: 32556
+      port: 80
+      targetPort: 8080

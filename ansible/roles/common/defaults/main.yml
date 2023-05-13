@@ -4,3 +4,5 @@ public_key_1: "648ACFD622F3D138"
 public_key_2: "0E98404D386FA1D9"
 go_archive: "go1.20.3.linux-amd64.tar.gz"
 cni_plugin: "10-crio-bridge.conflist"
+first_setup: true
+cni_plugin_reconfigure: false

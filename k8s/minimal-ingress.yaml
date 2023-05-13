@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: couchdb-ingress
+spec:
+  ingressClassName: traefik 
+  rules:
+    - host: 172-26-135-249.nip.io
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: haha-couchdb 
+              port:
+                number: 5984
