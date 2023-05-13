@@ -3,7 +3,7 @@
   hosts: k3s_master
   become: true
   vars:
-    - home_path: "/Users/ericwhite/.kube/"
+    home_path: "/Users/ericwhite/.kube/"
   tasks:
     - name: Download and install K3s on the master node
       ansible.builtin.shell: "curl -sfL https://get.k3s.io | sh -"
