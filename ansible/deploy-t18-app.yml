@@ -1,6 +1,7 @@
 ---
-- hosts: localhost
-  gather_facts: no
+- name: Deploy team 18 app
+  hosts: localhost
+  gather_facts: false
   vars:
     replica_count: 4 # Use this to control number of replica
   tasks:
@@ -16,7 +17,7 @@
               app: t18-app
             namespace: default
           spec:
-            replicas: "{{ replica_count | int}}"
+            replicas: "{{ replica_count | int }}"
             selector:
               matchLabels:
                 app: t18-app
