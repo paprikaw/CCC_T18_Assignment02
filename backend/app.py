@@ -3,8 +3,68 @@ import random
 from flask_cors import CORS
 from flask import Flask, jsonify, send_from_directory
 import os
+import requests
 
-# config the build folder path
+os.environ['HEATMAP_URL'] = "http://admin:666@couchdb-app-172-26-135-249.nip.io/test_housing_twitter/_design/full/_view/location_point"
+os.environ['INCOME_HEATMAP_URL'] = "http://admin:666@couchdb-app-172-26-135-249.nip.io/test_income_twitter/_design/full/_view/location_point"
+os.environ['TRANSPORT_HEATMAP_URL'] = "http://admin:666@couchdb-app-172-26-135-249.nip.io/test_transport_twitter/_design/full/_view/location_point"
+
+os.environ['STATE_AVG_SENTIMENT_URL'] = "http://admin:666@couchdb-app-172-26-135-249.nip.io/test_housing_twitter/_design/full/_view/state_avg_sentiment"
+os.environ['INCOME_STATE_AVG_SENTIMENT_URL'] = "http://admin:666@couchdb-app-172-26-135-249.nip.io/test_income_twitter/_design/full/_view/state_avg_sentiment"
+os.environ['TRANSPORT_STATE_AVG_SENTIMENT_URL'] = "http://admin:666@couchdb-app-172-26-135-249.nip.io/test_transport_twitter/_design/full/_view/state_avg_sentiment"
+
+os.environ['TOKEN_COUNT_URL']="http://admin:666@couchdb-app-172-26-135-249.nip.io/test_housing_twitter/_design/full/_view/token_count"
+os.environ['INCOME_TOKEN_COUNT_URL']="http://admin:666@couchdb-app-172-26-135-249.nip.io/test_income_twitter/_design/full/_view/token_count"
+os.environ['TRANSPORT_TOKEN_COUNT_URL']="http://admin:666@couchdb-app-172-26-135-249.nip.io/test_transport_twitter/_design/full/_view/token_count"
+
+os.environ['PIE_DATA_URL']="http://admin:666@couchdb-app-172-26-135-249.nip.io/test_housing_twitter/_design/full/_view/token_count"
+os.environ['INCOME_PIE_DATA_URL']="http://admin:666@couchdb-app-172-26-135-249.nip.io/test_income_twitter/_design/full/_view/token_count"
+os.environ['TRANSPORT_PIE_DATA_URL']="http://admin:666@couchdb-app-172-26-135-249.nip.io/test_transport_twitter/_design/full/_view/token_count"
+
+os.environ['WORDCLOUD_DATA_URL']="http://admin:666@couchdb-app-172-26-135-249.nip.io/test_housing_twitter/_design/full/_view/token_count"
+os.environ['INCOME_WORDCLOUD_DATA_URL']="http://admin:666@couchdb-app-172-26-135-249.nip.io/test_income_twitter/_design/full/_view/token_count"
+os.environ['TRANSPORT_WORDCLOUD_DATA_URL']="http://admin:666@couchdb-app-172-26-135-249.nip.io/test_transport_twitter/_design/full/_view/token_count"
+
+state_mapping = {
+    'default': "New South Wales",
+    'western australia': "Western Australia",
+    'new south wales': "New South Wales",
+    'northern territory': "Northern Territory",
+    'tasmania': "Tasmania",
+    'victoria': "Victoria",
+    'queensland': "Queensland",
+    'australian capital territory': "Australian Capital Territory",
+    'south australia': "South Australia"
+}
+
+params = {
+    'reduce': 'true',
+    'group_level': '1'
+}
+auth = ('admin', '666')
+
+heatmap_url = os.environ['HEATMAP_URL']
+income_heatmap_url = os.environ['INCOME_HEATMAP_URL']
+transport_heatmap_url = os.environ['TRANSPORT_HEATMAP_URL']
+
+state_avg_sentiment_url = os.environ['STATE_AVG_SENTIMENT_URL']
+income_state_avg_sentiment_url = os.environ['INCOME_STATE_AVG_SENTIMENT_URL']
+transport_state_avg_sentiment_url = os.environ['TRANSPORT_STATE_AVG_SENTIMENT_URL']
+
+token_count_url = os.environ['TOKEN_COUNT_URL']
+income_token_count_url = os.environ['INCOME_TOKEN_COUNT_URL']
+transport_token_count_url = os.environ['TRANSPORT_TOKEN_COUNT_URL']
+
+pie_data_url = os.environ['PIE_DATA_URL']
+income_pie_data_url = os.environ['INCOME_PIE_DATA_URL']
+transport_pie_data_url = os.environ['TRANSPORT_PIE_DATA_URL']
+
+wordcloud_data_url = os.environ['WORDCLOUD_DATA_URL']
+income_wordcloud_data_url = os.environ['INCOME_WORDCLOUD_DATA_URL']
+transport_wordcloud_data_url = os.environ['TRANSPORT_WORDCLOUD_DATA_URL']
+
+
+# config the build1 folder path
 app = Flask(__name__, static_folder="../frontend/build")
 CORS(app)
 
@@ -23,7 +83,7 @@ def serve(path):
     else:
         return send_from_directory(app.static_folder, "index.html")
 
-# ...您的其他API端点代码...
+
 
 @app.route('/api/bar-data')
 def get_bar_data():
@@ -38,56 +98,137 @@ def get_bar_data():
     data = {word: random.randint(0, 100) for word in words}
     print(data)
     return jsonify(list(data.items()))
-
 @app.route('/api/heatmap-data')
 def get_heatmap_data():
-    data = [
-        { "name": "Melbourne", "latlng": [-37.8136, 144.9631] },
-        { "name": "Sydney", "latlng": [-33.8688, 151.2093] },
-        { "name": "Adelaide", "latlng": [-34.9285, 138.6007] },
-        { "name": "Perth", "latlng": [-31.9505, 115.8605] },
-        { "name": "Brisbane", "latlng": [-27.4698, 153.0251] }
-    ]
-    return jsonify(data)
+    url = heatmap_url
 
+    response = requests.get(url, params=params, auth=auth)
+
+    if response.status_code == 200:
+        data = response.json()
+        rows = data['rows']
+        print(rows[:5])
+    data=[]
+    for i in rows:
+        tmp={}
+        tmp['name']=i['key']
+        tmp['latlng']=i['value']
+        data.append(tmp)
+    return jsonify(data)
+@app.route('/api/income/heatmap-data')
+def get_income_heatmap_data():
+    url = income_heatmap_url
+
+    response = requests.get(url, params=params, auth=auth)
+
+    if response.status_code == 200:
+        data = response.json()
+        rows = data['rows']
+        print(rows[:5])
+    data=[]
+    for i in rows:
+        tmp={}
+        tmp['name']=i['key']
+        tmp['latlng']=i['value']
+        data.append(tmp)
+    return jsonify(data)
+@app.route('/api/transport/heatmap-data')
+def get_transport_heatmap_data():
+    url = transport_heatmap_url
+
+    response = requests.get(url, params=params, auth=auth)
+
+    if response.status_code == 200:
+        data = response.json()
+        rows = data['rows']
+        print(rows[:5])
+    data=[]
+    for i in rows:
+        tmp={}
+        tmp['name']=i['key']
+        tmp['latlng']=i['value']
+        data.append(tmp)
+    return jsonify(data)
 @app.route('/api/statemap-data')
 def get_state_data():
-    data = [
-        {"name": "New South Wales", "value": 730000000},
-        {"name": "Queensland", "value": 5800000},
-        {"name": "South Australia", "value": 1700000},
-        {"name": "Tasmania", "value": 500000},
-        {"name": "Victoria", "value": 6500000},
-        {"name": "Western Australia", "value": 2500000},
-        {"name": "Australian Capital Territory", "value": 400000},
-        {"name": "Northern Territory", "value": 250000}
-    ]
+    url = state_avg_sentiment_url
+
+    response = requests.get(url, params=params, auth=auth)
+
+    if response.status_code == 200:
+        data = response.json()
+        rows = data['rows']
+        rows.sort(key=lambda x: x['value'], reverse=True)
+        top30 = rows[:30]
+        print(top30)
+    else:
+        print('Request failed with status code:', response.status_code)
+    print(top30)
+    data=[]
+    for i in top30:
+        tmp={}
+        tmp['name']=state_mapping[i['key']]
+        tmp['value']=(i['value'][0])
+        data.append(tmp)
+    print(data)
     return jsonify(data)
+@app.route('/api/income/statemap-data')
+def get_income_state_data():
+    url = income_state_avg_sentiment_url
 
-# @app.route('/api/histogram-data')
-# def get_histogram_data():
-#
-#     data = [
-#         ['score', 'amount', 'product'],
-#         [89.3, 58212, 'Matcha Latte'],
-#         [57.1, 78254, 'Milk Tea'],
-#         [74.4, 41032, 'Cheese Cocoa'],
-#         [50.1, 12755, 'Cheese Brownie'],
-#         [89.7, 20145, 'Matcha Cocoa'],
-#         [68.1, 79146, 'Tea'],
-#         [19.6, 91852, 'Orange Juice'],
-#         [10.6, 101852, 'Lemon Juice'],
-#         [32.7, 20112, 'Walnut Brownie']
-#     ]
-#     return jsonify(data)
+    response = requests.get(url, params=params, auth=auth)
 
+    if response.status_code == 200:
+        data = response.json()
+        rows = data['rows']
+        rows.sort(key=lambda x: x['value'], reverse=True)
+        top30 = rows[:30]
+    else:
+        print('Request failed with status code:', response.status_code)
+    data=[]
+    for i in top30:
+        tmp={}
+        tmp['name']=state_mapping[i['key']]
+        tmp['value']=(i['value'][0])
+        data.append(tmp)
+    return jsonify(data)
+@app.route('/api/transport/statemap-data')
+def get_transport_state_data():
+    url = transport_state_avg_sentiment_url
+
+    response = requests.get(url, params=params, auth=auth)
+
+    if response.status_code == 200:
+        data = response.json()
+        rows = data['rows']
+        rows.sort(key=lambda x: x['value'], reverse=True)
+        top30 = rows[:30]
+    else:
+        print('Request failed with status code:', response.status_code)
+    data=[]
+    for i in top30:
+        tmp={}
+        tmp['name']=state_mapping[i['key']]
+        tmp['value']=(i['value'][0])
+        data.append(tmp)
+    return jsonify(data)
 @app.route('/api/histogram-data')
 def get_histogram_data():
-    with open('../data/moData.json', 'r') as f:
-        data = f.read()
+
+    url = token_count_url
+
+    response = requests.get(url, params=params, auth=auth)
+
+    if response.status_code == 200:
+        data = response.json()
+        rows = data['rows']
+        rows.sort(key=lambda x: x['value'], reverse=True)
+        top30 = rows[60:120]
+    else:
+        print('Request failed with status code:', response.status_code)
 
     # 将JSON数据转换为Python对象
-    data = json.loads(data)
+    data = top30
     max_val = max(data, key=lambda i: i['value'])['value']
 
     res = []
@@ -95,55 +236,196 @@ def get_histogram_data():
         tmp = []
         tmp.append(d['value'] / max_val * 100)
         tmp.append(d['value'])
-        tmp.append(d['x'])
+        tmp.append(d['key'])
         res.append(tmp)
-    res=sorted(res[1:],key=lambda i:i[1],reverse=True)[:50]
+    res=sorted(res[1:],key=lambda i:i[1],reverse=True)
     res.insert(0,['score', 'amount', 'product'])
 
     return jsonify(res)
+@app.route('/api/income/histogram-data')
+def get_income_histogram_data():
+    url = income_token_count_url
 
-@app.route('/api/pie-data')
-def get_pie_data():
-    with open('../data/moData.json', 'r') as f:
-        data = f.read()
+    response = requests.get(url, params=params, auth=auth)
+
+    if response.status_code == 200:
+        data = response.json()
+        rows = data['rows']
+        rows.sort(key=lambda x: x['value'], reverse=True)
+        top30 = rows[60:120]
+    else:
+        print('Request failed with status code:', response.status_code)
 
     # 将JSON数据转换为Python对象
-    data = json.loads(data)
+    data = top30
+    max_val = max(data, key=lambda i: i['value'])['value']
+
+    res = []
+    for d in data:
+        tmp = []
+        tmp.append(d['value'] / max_val * 100)
+        tmp.append(d['value'])
+        tmp.append(d['key'])
+        res.append(tmp)
+    res=sorted(res[1:],key=lambda i:i[1],reverse=True)
+    res.insert(0,['score', 'amount', 'product'])
+
+    return jsonify(res)
+@app.route('/api/transport/histogram-data')
+def get_transport_histogram_data():
+    url = transport_token_count_url
+
+    response = requests.get(url, params=params, auth=auth)
+
+    if response.status_code == 200:
+        data = response.json()
+        rows = data['rows']
+        rows.sort(key=lambda x: x['value'], reverse=True)
+        top30 = rows[60:120]
+    else:
+        print('Request failed with status code:', response.status_code)
+
+    # 将JSON数据转换为Python对象
+    data = top30
+    max_val = max(data, key=lambda i: i['value'])['value']
+
+    res = []
+    for d in data:
+        tmp = []
+        tmp.append(d['value'] / max_val * 100)
+        tmp.append(d['value'])
+        tmp.append(d['key'])
+        res.append(tmp)
+    res=sorted(res[1:],key=lambda i:i[1],reverse=True)
+    res.insert(0,['score', 'amount', 'product'])
+
+    return jsonify(res)
+@app.route('/api/pie-data')
+def get_pie_data():
+    url = pie_data_url
+
+    response = requests.get(url, params=params, auth=auth)
+
+    if response.status_code == 200:
+        data = response.json()
+        rows = data['rows']
+        rows.sort(key=lambda x: x['value'], reverse=True)
+        top30 = rows[90:120]
+    else:
+        print('Request failed with status code:', response.status_code)
+
+    # 将JSON数据转换为Python对象
+    data = top30
     # max_val = max(data, key=lambda i: i['value'])['value']
 
     res = []
     for d in data:
         tmp = {}
         tmp['value']=d['value']
-        tmp['name']=d['x']
+        tmp['name']=d['key']
         res.append(tmp)
     res = sorted(res[:], key=lambda i: i['value'], reverse=True)[:10]
 
-    data = [
-        { 'value': 40, 'name': 'rose 1' },
-        { 'value': 38, 'name': 'rose 2' },
-        { 'value': 32, 'name': 'rose 3' },
-        { 'value': 30, 'name': 'rose 4' },
-        { 'value': 28, 'name': 'rose 5' },
-        { 'value': 26, 'name': 'rose 6' },
-        { 'value': 22, 'name': 'rose 7' },
-        { 'value': 18, 'name': 'rose 8' }
-    ]
     return jsonify(res)
+@app.route('/api/income/pie-data')
+def get_income_pie_data():
+    url = income_pie_data_url
 
+    response = requests.get(url, params=params, auth=auth)
 
-@app.route('/api/wordcloud-data')
-def get_wordcloud_data():
-    # 从文件中读取JSON数据
-    with open('../data/moData.json', 'r') as f:
-        data = f.read()
+    if response.status_code == 200:
+        data = response.json()
+        rows = data['rows']
+        rows.sort(key=lambda x: x['value'], reverse=True)
+        top30 = rows[90:120]
+    else:
+        print('Request failed with status code:', response.status_code)
 
     # 将JSON数据转换为Python对象
-    data = json.loads(data)
+    data = top30
+    # max_val = max(data, key=lambda i: i['value'])['value']
 
-    # 返回JSON数据
-    return jsonify(data)
+    res = []
+    for d in data:
+        tmp = {}
+        tmp['value']=d['value']
+        tmp['name']=d['key']
+        res.append(tmp)
+    res = sorted(res[:], key=lambda i: i['value'], reverse=True)[:10]
 
+    return jsonify(res)
+@app.route('/api/transport/pie-data')
+def get_transport_pie_data():
+    url = transport_pie_data_url
+
+    response = requests.get(url, params=params, auth=auth)
+
+    if response.status_code == 200:
+        data = response.json()
+        rows = data['rows']
+        rows.sort(key=lambda x: x['value'], reverse=True)
+        top30 = rows[90:120]
+    else:
+        print('Request failed with status code:', response.status_code)
+
+    # 将JSON数据转换为Python对象
+    data = top30
+    # max_val = max(data, key=lambda i: i['value'])['value']
+
+    res = []
+    for d in data:
+        tmp = {}
+        tmp['value']=d['value']
+        tmp['name']=d['key']
+        res.append(tmp)
+    res = sorted(res[:], key=lambda i: i['value'], reverse=True)[:10]
+
+    return jsonify(res)
+@app.route('/api/wordcloud-data')
+def get_wordcloud_data():
+    url = wordcloud_data_url
+
+    response = requests.get(url, params=params, auth=auth)
+
+    if response.status_code == 200:
+        data = response.json()
+        rows = data['rows']
+        rows.sort(key=lambda x: x['value'], reverse=True)
+        top30 = rows[60:120]
+    else:
+        print('Request failed with status code:', response.status_code)
+
+    return jsonify(top30)
+@app.route('/api/income/wordcloud-data')
+def get_income_wordcloud_data():
+    url = income_wordcloud_data_url
+
+    response = requests.get(url, params=params, auth=auth)
+
+    if response.status_code == 200:
+        data = response.json()
+        rows = data['rows']
+        rows.sort(key=lambda x: x['value'], reverse=True)
+        top30 = rows[60:120]
+    else:
+        print('Request failed with status code:', response.status_code)
+
+    return jsonify(top30)
+@app.route('/api/transport/wordcloud-data')
+def get_transport_wordcloud_data():
+    url = transport_wordcloud_data_url
+
+    response = requests.get(url, params=params, auth=auth)
+
+    if response.status_code == 200:
+        data = response.json()
+        rows = data['rows']
+        rows.sort(key=lambda x: x['value'], reverse=True)
+        top30 = rows[60:120]
+    else:
+        print('Request failed with status code:', response.status_code)
+
+    return jsonify(top30)
 @app.after_request
 def add_no_cache_headers(response):
     response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
