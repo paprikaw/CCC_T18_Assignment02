@@ -9,5 +9,3 @@ spec:
     - protocol: TCP
       port: 5984
       targetPort: 5984
-      nodePort: 30000
-  type: NodePort

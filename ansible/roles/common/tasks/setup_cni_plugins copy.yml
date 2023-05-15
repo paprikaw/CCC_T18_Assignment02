@@ -1,5 +1,5 @@
 ---
-- name: install plugins 
+- name: Install plugins
   ansible.builtin.shell: |
     # Install go
     cd ~
@@ -17,8 +17,16 @@
     sudo cp bin/* /opt/cni/bin/
     cd ..
     rm -rf plugins
+  changed_when: true
+
+- name: Create a config directory if it does not exist
+  ansible.builtin.file:
+    path: /etc/cni/net.d
+    state: directory
+    mode: '0755'
 
 - name: Copy CNI configuration to target directory
-  copy:
+  ansible.builtin.copy:
     src: "{{ cni_plugin }}"
-    dest: "/etc/cni/net.d/{{ cni_plugin }}" 
+    dest: "/etc/cni/net.d/{{ cni_plugin }}"
+    mode: "0755"

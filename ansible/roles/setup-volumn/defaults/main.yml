@@ -1,0 +1,2 @@
+volumn_path: /dev/vdb
+mount_path: /mnt/attached-volumn

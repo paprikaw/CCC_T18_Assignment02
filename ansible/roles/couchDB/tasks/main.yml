@@ -1,0 +1,7 @@
+- name: Deploy CouchDB chart
+  kubernetes.core.helm:
+    name: couchDBApp
+    chart_ref: couchdb/couchdb
+    release_namespace: default
+    release_values: "{{ lookup('file', 'helm_values/couchdb_values.yml') | from_yaml }}"
+    wait: true

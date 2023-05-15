@@ -1,7 +1,7 @@
 ---
 - name: 更新软件包缓存
   ansible.builtin.apt:
-    update_cache: yes
+    update_cache: true
 
 - name: 安装依赖包
   ansible.builtin.apt:
@@ -22,11 +22,11 @@
     path: /etc/apt/sources.list.d/kubernetes.list
     line: "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main"
     state: present
-    create: yes
+    create: true
 
 - name: 再次更新软件包缓存
   ansible.builtin.apt:
-    update_cache: yes
+    update_cache: true
 
 - name: 安装 Kubernetes 组件
   ansible.builtin.apt:

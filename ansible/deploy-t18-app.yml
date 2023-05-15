@@ -1,0 +1,76 @@
+---
+- name: Deploy team 18 app
+  hosts: localhost
+  gather_facts: false
+  vars:
+    replica_count: 4 # Use this to control number of replica
+  tasks:
+    - name: Create a deployment for t18 app
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: t18-app
+            labels:
+              app: t18-app
+            namespace: default
+          spec:
+            replicas: "{{ replica_count | int }}"
+            selector:
+              matchLabels:
+                app: t18-app
+            template:
+              metadata:
+                labels:
+                  app: t18-app
+              spec:
+                containers:
+                  - name: t18-app
+                    image: ghcr.io/paprikaw/ccc_t18_assignment02:release
+                    ports:
+                      - containerPort: 5000
+                        name: t18-app-port
+                imagePullSecrets:
+                  - name: regcred
+
+    - name: Create a service for t18 app
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: t18-app-service
+            namespace: default
+          spec:
+            selector:
+              app: t18-app
+            ports:
+              - protocol: TCP
+                port: 80
+                targetPort: t18-app-port
+
+    - name: Create an ingress for t18 app
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: networking.k8s.io/v1
+          kind: Ingress
+          metadata:
+            name: t18-app-ingress
+            namespace: default
+          spec:
+            ingressClassName: traefik
+            rules:
+              - host: t18-app-172-26-135-249.nip.io
+                http:
+                  paths:
+                    - pathType: Prefix
+                      path: "/"
+                      backend:
+                        service:
+                          name: t18-app-service
+                          port:
+                            number: 80

@@ -1,6 +1,17 @@
 - name: Install Kubernetes Dashboard
-  ansible.builtin.k8s:
+  kubernetes.core.k8s:
     state: present
     src: https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
-    kubeconfig: "{{ kubeconfig_path }}"
-  delegate_to: localhost
+- name: debug
+  debug:
+    msg: "{{ configure_file_path }}"
+
+- name: Create Service account
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('file', 'actions/ServerAccount.yml' ) | from_yaml }}"
+
+- name: Create role binding
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('file', 'actions/ClusterRoleBinding.yml') | from_yaml }}"

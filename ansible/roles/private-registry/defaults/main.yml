@@ -1,0 +1,5 @@
+github_username: username
+github_token: GIT_TOKEN 
+secret_name: regcred 
+email: your_email 
+namespace: default

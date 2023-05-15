@@ -1,5 +1,8 @@
-- name: Initialize control pane
-  ansible.builtin.include_tasks: init_control_pane.yml
+# - name: Initialize control pane
+#   ansible.builtin.include_tasks: init_control_pane.yml
 
-- name: Copy admin.conf to local
-  ansible.builtin.include_tasks: copy_admin_conf.yml
+# - name: Copy admin.conf to local
+#   ansible.builtin.include_tasks: copy_admin_conf.yml
+- name: Kubeadm init
+  debug: 
+    msg: "sudo kubeadm init --pod-network-cidr={{ pod_network_cidr }}"

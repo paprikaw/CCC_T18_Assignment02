@@ -1,12 +1,17 @@
 ---
 - name: Initialize iptable
-  include_tasks: config_iptable.yml
+  ansible.builtin.include_tasks: config_iptable.yml
 
 - name: Install CRI-O Runtime
-  include_tasks: install_crio_runtime.yml
+  ansible.builtin.include_tasks: install_crio_runtime.yml
 
-- name: set up cni plugins
-  include_tasks: setup_cni_plugins.yml
+- name: Install kubeadm Components
+  ansible.builtin.include_tasks: install_k8s.yml
 
-- name: Install Kubernetes Components
-  include_tasks: install_k8s.yml
+# - name: Reconfigure cni plugin
+#   ansible.builtin.include_tasks: reconfigure_cni_plugins.yml
+#   when: cni_plugin_reconfigure is defined and cni_plugin_reconfigure
+
+# - name: Remove default cni plugins
+#   ansible.builtin.include_tasks: delete_cni_plugins.yml
+#   when: cni_plugin_delete is defined and cni_plugin_delete

@@ -1,0 +1,3 @@
+# Please define this variable in your playbook task
+# https://docs.k3s.io/quick-start#install-script
+token: token_to_join_k3s_CLUSTER

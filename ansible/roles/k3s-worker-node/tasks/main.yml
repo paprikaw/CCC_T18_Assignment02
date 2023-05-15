@@ -1,0 +1,8 @@
+- name: Print the command
+  ansible.builtin.debug:
+    msg: "curl -sfL https://get.k3s.io | K3S_URL=https://{{ hostvars['control_panel']['ansible_host'] }}:6443 K3S_TOKEN={{ token }} sh -"
+
+- name: Join the nodes
+  ansible.builtin.shell: "curl -sfL https://get.k3s.io | K3S_URL=https://{{ hostvars['control_panel']['ansible_host'] }}:6443 K3S_TOKEN={{ token }} sh -"
+  args:
+    executable: /bin/bash

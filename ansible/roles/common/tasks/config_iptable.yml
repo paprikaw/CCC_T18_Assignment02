@@ -1,7 +1,6 @@
 ---
-
 # https://kubernetes.io/docs/setup/production-environment/container-runtimes/#forwarding-ipv4-and-letting-iptables-see-bridged-traffic
-- name: load iptable configuration 
+- name: Load iptable configuration
   ansible.builtin.shell: |
     cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
     overlay

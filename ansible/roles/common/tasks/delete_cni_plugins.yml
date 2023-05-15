@@ -1,0 +1,15 @@
+- name: Remove existing CNI configuration files
+  ansible.builtin.file:
+    state: absent
+    path: "/etc/cni/net.d/"
+
+- name: Remove existing CNI plugins
+  ansible.builtin.file:
+    state: absent
+    path: "/opt/cni/bin/"
+
+- name: Reload CRI-O configuration
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: true
+    name: crio

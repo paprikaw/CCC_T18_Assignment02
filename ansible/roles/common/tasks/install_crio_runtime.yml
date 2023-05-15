@@ -8,11 +8,11 @@
 
 - name: Add buster-backports repository
   ansible.builtin.shell: |
-    echo 'deb http://deb.debian.org/debian buster-backports main' | sudo tee /etc/apt/sources.list.d/backports.list
+       echo 'deb http://deb.debian.org/debian buster-backports main' | sudo tee /etc/apt/sources.list.d/backports.list
 
 - name: Update apt cache
   ansible.builtin.apt:
-    update_cache: yes
+    update_cache: true
 
 - name: Install libseccomp2 from buster-backports
   ansible.builtin.apt:
@@ -25,18 +25,20 @@
     echo "deb [signed-by=/usr/share/keyrings/libcontainers-archive-keyring.gpg] https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/{{ os }}/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
 
     echo "deb [signed-by=/usr/share/keyrings/libcontainers-crio-archive-keyring.gpg] https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/{{ version }}/{{ os }}/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable:cri-o:{{ version }}.list
+  changed_when: true
 
-- name: gpg stuff 
+- name: gpg stuff
   ansible.builtin.shell: |
     mkdir -p /usr/share/keyrings
 
     curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/{{ os }}/Release.key | sudo gpg --dearmor -o /usr/share/keyrings/libcontainers-archive-keyring.gpg
 
     curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/{{ version }}/{{ os }}/Release.key | sudo gpg --dearmor -o /usr/share/keyrings/libcontainers-crio-archive-keyring.gpg
+  changed_when: true
 
 - name: Update apt cache
   ansible.builtin.apt:
-    update_cache: yes
+    update_cache: true
 
 - name: Install cri-o and cri-o-runc
   ansible.builtin.apt:
@@ -49,4 +51,4 @@
   ansible.builtin.systemd:
     name: crio
     state: started
-    enabled: yes
+    enabled: true
