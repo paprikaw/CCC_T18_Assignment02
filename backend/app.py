@@ -5,25 +5,11 @@ from flask import Flask, jsonify, send_from_directory
 import os
 import requests
 
-os.environ['HEATMAP_URL'] = "http://admin:666@couchdb-app-172-26-135-249.nip.io/test_housing_twitter/_design/full/_view/location_point"
-os.environ['INCOME_HEATMAP_URL'] = "http://admin:666@couchdb-app-172-26-135-249.nip.io/test_income_twitter/_design/full/_view/location_point"
-os.environ['TRANSPORT_HEATMAP_URL'] = "http://admin:666@couchdb-app-172-26-135-249.nip.io/test_transport_twitter/_design/full/_view/location_point"
+if os.environ["DEV"] == "true":
+    url_prefix = "http://admin:666@couchdb-app-172-26-135-249.nip.io"
+else:
+    url_prefix = "http://couch-1-couchdb:5984"
 
-os.environ['STATE_AVG_SENTIMENT_URL'] = "http://admin:666@couchdb-app-172-26-135-249.nip.io/test_housing_twitter/_design/full/_view/state_avg_sentiment"
-os.environ['INCOME_STATE_AVG_SENTIMENT_URL'] = "http://admin:666@couchdb-app-172-26-135-249.nip.io/test_income_twitter/_design/full/_view/state_avg_sentiment"
-os.environ['TRANSPORT_STATE_AVG_SENTIMENT_URL'] = "http://admin:666@couchdb-app-172-26-135-249.nip.io/test_transport_twitter/_design/full/_view/state_avg_sentiment"
-
-os.environ['TOKEN_COUNT_URL']="http://admin:666@couchdb-app-172-26-135-249.nip.io/test_housing_twitter/_design/full/_view/token_count"
-os.environ['INCOME_TOKEN_COUNT_URL']="http://admin:666@couchdb-app-172-26-135-249.nip.io/test_income_twitter/_design/full/_view/token_count"
-os.environ['TRANSPORT_TOKEN_COUNT_URL']="http://admin:666@couchdb-app-172-26-135-249.nip.io/test_transport_twitter/_design/full/_view/token_count"
-
-os.environ['PIE_DATA_URL']="http://admin:666@couchdb-app-172-26-135-249.nip.io/test_housing_twitter/_design/full/_view/token_count"
-os.environ['INCOME_PIE_DATA_URL']="http://admin:666@couchdb-app-172-26-135-249.nip.io/test_income_twitter/_design/full/_view/token_count"
-os.environ['TRANSPORT_PIE_DATA_URL']="http://admin:666@couchdb-app-172-26-135-249.nip.io/test_transport_twitter/_design/full/_view/token_count"
-
-os.environ['WORDCLOUD_DATA_URL']="http://admin:666@couchdb-app-172-26-135-249.nip.io/test_housing_twitter/_design/full/_view/token_count"
-os.environ['INCOME_WORDCLOUD_DATA_URL']="http://admin:666@couchdb-app-172-26-135-249.nip.io/test_income_twitter/_design/full/_view/token_count"
-os.environ['TRANSPORT_WORDCLOUD_DATA_URL']="http://admin:666@couchdb-app-172-26-135-249.nip.io/test_transport_twitter/_design/full/_view/token_count"
 
 state_mapping = {
     'default': "New South Wales",
@@ -43,26 +29,47 @@ params = {
 }
 auth = ('admin', '666')
 
-heatmap_url = os.environ['HEATMAP_URL']
-income_heatmap_url = os.environ['INCOME_HEATMAP_URL']
-transport_heatmap_url = os.environ['TRANSPORT_HEATMAP_URL']
+# heatmap_url = os.environ['HEATMAP_URL']
+# income_heatmap_url = os.environ['INCOME_HEATMAP_URL']
+# transport_heatmap_url = os.environ['TRANSPORT_HEATMAP_URL']
 
-state_avg_sentiment_url = os.environ['STATE_AVG_SENTIMENT_URL']
-income_state_avg_sentiment_url = os.environ['INCOME_STATE_AVG_SENTIMENT_URL']
-transport_state_avg_sentiment_url = os.environ['TRANSPORT_STATE_AVG_SENTIMENT_URL']
+# state_avg_sentiment_url = os.environ['STATE_AVG_SENTIMENT_URL']
+# income_state_avg_sentiment_url = os.environ['INCOME_STATE_AVG_SENTIMENT_URL']
+# transport_state_avg_sentiment_url = os.environ['TRANSPORT_STATE_AVG_SENTIMENT_URL']
 
-token_count_url = os.environ['TOKEN_COUNT_URL']
-income_token_count_url = os.environ['INCOME_TOKEN_COUNT_URL']
-transport_token_count_url = os.environ['TRANSPORT_TOKEN_COUNT_URL']
+# token_count_url = os.environ['TOKEN_COUNT_URL']
+# income_token_count_url = os.environ['INCOME_TOKEN_COUNT_URL']
+# transport_token_count_url = os.environ['TRANSPORT_TOKEN_COUNT_URL']
 
-pie_data_url = os.environ['PIE_DATA_URL']
-income_pie_data_url = os.environ['INCOME_PIE_DATA_URL']
-transport_pie_data_url = os.environ['TRANSPORT_PIE_DATA_URL']
+# pie_data_url = os.environ['PIE_DATA_URL']
+# income_pie_data_url = os.environ['INCOME_PIE_DATA_URL']
+# transport_pie_data_url = os.environ['TRANSPORT_PIE_DATA_URL']
 
-wordcloud_data_url = os.environ['WORDCLOUD_DATA_URL']
-income_wordcloud_data_url = os.environ['INCOME_WORDCLOUD_DATA_URL']
-transport_wordcloud_data_url = os.environ['TRANSPORT_WORDCLOUD_DATA_URL']
+# wordcloud_data_url = os.environ['WORDCLOUD_DATA_URL']
+# income_wordcloud_data_url = os.environ['INCOME_WORDCLOUD_DATA_URL']
+# transport_wordcloud_data_url = os.environ['TRANSPORT_WORDCLOUD_DATA_URL']
 
+
+# 合并URL和路由
+heatmap_url = url_prefix + "/test_housing_twitter/_design/full/_view/location_point"
+income_heatmap_url = url_prefix + "/test_income_twitter/_design/full/_view/location_point"
+transport_heatmap_url = url_prefix + "/test_transport_twitter/_design/full/_view/location_point"
+
+state_avg_sentiment_url = url_prefix + "/test_housing_twitter/_design/full/_view/state_avg_sentiment"
+income_state_avg_sentiment_url = url_prefix + "/test_income_twitter/_design/full/_view/state_avg_sentiment"
+transport_state_avg_sentiment_url = url_prefix + "/test_transport_twitter/_design/full/_view/state_avg_sentiment"
+
+token_count_url = url_prefix + "/test_housing_twitter/_design/full/_view/token_count"
+income_token_count_url = url_prefix + "/test_income_twitter/_design/full/_view/token_count"
+transport_token_count_url = url_prefix + "/test_transport_twitter/_design/full/_view/token_count"
+
+pie_data_url = url_prefix + "/test_housing_twitter/_design/full/_view/token_count"
+income_pie_data_url = url_prefix + "/test_income_twitter/_design/full/_view/token_count"
+transport_pie_data_url = url_prefix + "/test_transport_twitter/_design/full/_view/token_count"
+
+wordcloud_data_url = url_prefix + "/test_housing_twitter/_design/full/_view/token_count"
+income_wordcloud_data_url = url_prefix + "/test_income_twitter/_design/full/_view/token_count"
+transport_wordcloud_data_url = url_prefix + "/test_transport_twitter/_design/full/_view/token_count"
 
 # config the build1 folder path
 app = Flask(__name__, static_folder="../frontend/build")
