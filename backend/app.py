@@ -5,7 +5,7 @@ from flask import Flask, jsonify, send_from_directory
 import os
 import requests
 
-if os.environ["DEV"] == "true":
+if os.environ.get("DEV", "false") == "true":
     url_prefix = "http://admin:666@couchdb-app-172-26-135-249.nip.io"
 else:
     url_prefix = "http://couch-1-couchdb:5984"
